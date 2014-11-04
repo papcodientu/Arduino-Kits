@@ -4,24 +4,29 @@ Mạch bật tất đèn LED bằng nút bấm dùng Arduino
 Linh kiện:
 - Nút bấm 4 chân
 - Đèn LED
-- Điện trở 220 Ohm
+- Điện trở 220 Ohm, 10K Ohm
 - Arduino Uno
 
 Cách lắp mạch:
-- Cực dương LED nối vào cổng 2 trên board Arduino, 
-cực âm LED nối vào cổng Ground
-- Cực 1 hoặc 2 nút bấm nối vào cổng 8 trên board Arduino, 
-cực 3 hoặc 4 nút bấm nối vào cổng Ground
+- Xem hình
 
 Tác giả: Nhân Nguyễn
 Ngày: 06/09/2014
+Lịch sử thay đổi
+- 04/11/2014 Rev. 1.0 Added button debounce
+- 06/09/2014 Rev. 0.1 Draft, no button debounce
 Website: http://papcodientu.com/
 */
 
-const int nutBam = 8;
-const int denLED = 2;
+const int nutBam = 2;    // nut bam noi vao pin 2 cua Arduino
+const int denLED = 13;  // den LED noi vao pin 13 cua Arduino
 
-int trangthaiNutBam = 0;
+int trangthaidenLED = LOW;  // trang thai den LED hien tai
+int trangthaiNutBam;    // trang thai nut bam hien tai
+int trangthainutbamTruoc = LOW;   // trang thai nut bam truoc do
+
+long thoidiemDebounceTruoc = 0;  // thoi diem nut bam chuyen doi trang thai
+long dotreDebounce = 50;   // do tre cua moi lan debounce
 
 void setup() {
   // Khai báo các cổng trên board Arduino
@@ -29,17 +34,36 @@ void setup() {
   pinMode(nutBam, INPUT);   // Nút bấm là thiết bị đầu vào (input)
   
   // Thiet lap trang thai ban dau led va nut bam
-  digitalWrite(denLED, LOW);
-  digitalWrite(nutBam, HIGH);
+  digitalWrite(denLED, trangthaidenLED);
 }
 
 void loop() {
-  // Kiểm tra trạng thái nút bấm
-  trangthaiNutBam = digitalRead(nutBam);
+  int giatriNutBam = digitalRead(nutBam);  // doc gia tri cua nut bam
   
-  if (trangthaiNutBam == LOW) {  // nút đã được bấm
-    digitalWrite(denLED, HIGH);  // bật đèn sáng
-  } else {                       // nút không được bấm
-    digitalWrite(denLED, LOW);   // tắt đèn
+  // Neu trang thai nut bam thay doi, do viec bi nhieu hoac duoc nhan
+  if (giatriNutBam != trangthainutbamTruoc) {
+    // reset thoi diem debounce
+    thoidiemDebounceTruoc = millis(); 
   }
+  
+  // nut bam duoc giu lau hon dotreDebounce, nut bam that su duoc nhan
+  if ((millis() - thoidiemDebounceTruoc) > dotreDebounce) {
+    // trang thai nut bam da thay doi
+    if (giatriNutBam != trangthaiNutBam) {
+      // thay doi trang thai nut bam bang gia tri hien tai
+      trangthaiNutBam = giatriNutBam;
+     
+      // nut bam da duoc nhan
+      if (trangthaiNutBam == HIGH) {
+        // thay doi trang thai den LED
+        trangthaidenLED = !trangthaidenLED;  
+      }
+    }
+  }
+  
+  // xuat gia trang thai den LED
+  digitalWrite(denLED, trangthaidenLED);
+  
+  // ghi lai gia tri nut bam
+  trangthainutbamTruoc = giatriNutBam;
 }
