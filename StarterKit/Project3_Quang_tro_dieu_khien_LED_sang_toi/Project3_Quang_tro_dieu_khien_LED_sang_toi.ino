@@ -39,11 +39,8 @@ void loop() {
   // đọc giá trị từ quang trở
   giatriquangTro = analogRead(quangTro);
   
-  // map giá trị quang trở với giá trị xuất ra LED
-  giatridenLED = map(giatriquangTro, 0, 1023, 0, 255);
-  
   // hiển thị độ sáng đèn LED theo giá trị quang trở
-  analogWrite(denLED, giatridenLED);
+  analogWrite(denLED, giatriquangTro/2);
   
   // độ trễ 100 mili giây để ổn định giá trị quang trở
   delay(100);

@@ -62,7 +62,7 @@ void loop() {
     }
   }
   
-  if (trangthaidenLED = HIGH) {
+  if (trangthaidenLED == HIGH) {
     digitalWrite(denLED, HIGH);
     delay(tocdonhaydenLED);
     digitalWrite(denLED, LOW);  
