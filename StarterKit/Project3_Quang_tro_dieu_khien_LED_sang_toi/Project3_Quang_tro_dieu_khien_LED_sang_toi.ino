@@ -1,19 +1,51 @@
-int lightPin = 0;  // chân cắm của quang trở
-int ledPin=11;     // chân cắm của đèn LED
+/*
+Mạch điều khiển đèn LED sáng tối bằng biến trở
 
-void setup()
-{
-    Serial.begin(9600);  // xuất giá trị ra port 9600 
-    pinMode( ledPin, OUTPUT );    //đăng ký điều khiển đèn LED ở cổng số 13
+
+Linh kiện:
+- Quang trở
+- Đèn LED
+- Điện trở 220 Ohm, 10 Kilo Ohm
+- Arduino Uno
+
+Cách lắp mạch:
+- Xem hình
+
+Tác giả: Khang Nguyễn
+Ngày: 03/01/2015
+Lịch sử thay đổi
+- 03/01/2015 Rev. 1.0
+Website: http://papcodientu.com/
+*/
+
+//khai báo cổng đèn LED
+int denLED = 11;
+
+// khai báo biến trở
+int quangTro = A0;
+
+// gia tri doc duoc tu bien tro 0-1023
+int giatriquangTro = 0;
+
+// gia tri xuat ra den LED 0-255
+int giatridenLED = 0;
+
+void setup() {                
+  // cài đặt cổng led là cổng output
+  pinMode(denLED, OUTPUT);
 }
 
-void loop()
-{
-    Serial.println(analogRead(lightPin));     // In giá trị của quang trở để dễ theo dõi 
-                                                            // Giá trị tối đa là 1024
-  // chia cho 5,5 có vẻ tốt hơn :-?
-  analogWrite(ledPin,(analogRead(lightPin)   ) /5.5   );  
-  // Đọc số ở quang trở, chia cho 5,5 ; sau đó gửi giá trị vào cổng đèn LED.
+void loop() {
+  // đọc giá trị từ quang trở
+  giatriquangTro = analogRead(quangTro);
+  
+  // map giá trị quang trở với giá trị xuất ra LED
+  giatridenLED = map(giatriquangTro, 0, 1023, 0, 255);
+  
+  // hiển thị độ sáng đèn LED theo giá trị quang trở
+  analogWrite(denLED, giatridenLED);
+  
+  // độ trễ 100 mili giây để ổn định giá trị quang trở
   delay(100);
-  //tạm dừng mỗi 0,1 giây; sau đó chạy lại vòng lặp.
 }
+

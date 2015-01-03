@@ -1,20 +1,47 @@
 /*
-  Tác giả:Nguyễn Vương Tùng
-  Ngày:22/09/2014
-  Mạch Điều khiển đèn LED bằng biến trở
- */
-int bientro = 2;    // khai báo cổng 2 sẽ là cổng biến trở 
-int led = 13;   // khai báo cổng 13 là cổng của đèn LED
-int val = 0;       // khai báo già trị nhận được từ biến trở
+Mạch điều khiển đèn LED sáng tối bằng biến trở
 
-void setup() {
-  pinMode(led, OUTPUT);  // cài đặt cổng led là output
+
+Linh kiện:
+- Biến trở 10K
+- Đèn LED
+- Điện trở 220 Ohm
+- Arduino Uno
+
+Cách lắp mạch:
+- Xem hình
+
+Tác giả: Tùng Nguyễn
+Ngày: 03/01/2015
+Lịch sử thay đổi
+- 03/01/2015 Rev. 1.0
+Website: http://papcodientu.com/
+*/
+
+//khai báo cổng đèn LED
+int denLED = 11;
+
+// khai báo biến trở
+int bienTro = A0;
+
+// gia tri doc duoc tu bien tro 0-1023
+int giatribienTro = 0;
+
+void setup() {                
+  // cài đặt cổng led là cổng output
+  pinMode(denLED, OUTPUT);
 }
 
 void loop() {
-  val = analogRead(bientro);    // đọc giá trị của biến trở, bỏ vô val
-  digitalWrite(led, HIGH);  // bật đèn led
-  delay(val);                  // dừng 1 khoảng thời gian, dựa theo giá trị của biến trở
-  digitalWrite(led, LOW);   // tắt đèn led
-  delay(val); // như vậy đèn led sẽ được bật tắt liên tục và độ bật tắt nhanh chậm sẽ dựa vào giá trị //của biến trở 
+  // đọc giá trị từ biến trở
+  giatribienTro = analogRead(bienTro);
+  
+  // bật đèn LED
+  digitalWrite(denLED, HIGH);
+  delay(giatribienTro * 10);
+  
+  // tắt đèn LED
+  digitalWrite(denLED, LOW);
+  delay(giatribienTro * 10);
 }
+
