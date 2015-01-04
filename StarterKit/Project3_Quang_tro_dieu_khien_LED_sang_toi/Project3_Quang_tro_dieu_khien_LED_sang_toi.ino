@@ -27,9 +27,6 @@ int quangTro = A0;
 // gia tri doc duoc tu bien tro 0-1023
 int giatriquangTro = 0;
 
-// gia tri xuat ra den LED 0-255
-int giatridenLED = 0;
-
 void setup() {                
   // cài đặt cổng led là cổng output
   pinMode(denLED, OUTPUT);
