@@ -1,9 +1,9 @@
 /*
-Mạch điều khiển đèn LED bằng cảm biến PIR
+Mạch điều khiển đèn còi bằng cảm biến PIR
 
 Linh kiện:
 - Cảm biến PIR
-- Đèn LED
+- Còi
 - Arduino Uno
 
 Cách lắp mạch:
@@ -17,14 +17,14 @@ Website: http://papcodientu.com/
 */
 
 // khai báo cổng đèn LED
-int denLED = 11;
+int coi = 9;
 
 // khai báo cảm biến PIR
 int cambienPIR = 2;
 
 void setup() {                
   // cài đặt cổng led là cổng output
-  pinMode(denLED, OUTPUT);
+  pinMode(coi, OUTPUT);
   
   // cài đặt cổng cảm biến PIR là đầu vào
   pinMode(cambienPIR, INPUT);
@@ -33,9 +33,12 @@ void setup() {
 void loop() {
   // đọc giá trị từ cảm biến PIR
   if (digitalRead(cambienPIR) == HIGH) {
-    digitalWrite(denLED, HIGH); 
+    analogWrite(coi, 200);
+    delay(200);
+    analogWrite(coi, 0);
+    delay(200);
   } else {
-    digitalWrite(denLED, LOW);
+    digitalWrite(coi, LOW);
   }
 }
 
