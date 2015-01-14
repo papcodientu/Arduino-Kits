@@ -11,6 +11,12 @@ Linh kiện:
 - Cảm biến chuyển động
 - Arduino Uno
 
+Chế đô:
+0 - Tắt hệ thống
+1 - Nhà thông minh
+2 - Báo động
+3 - Cảm biết nhiệt độ
+
 Cách lắp mạch:
 - Xem hình
 
@@ -33,17 +39,24 @@ dht DHT;
 const int nutBam = 0;    // nut bam noi vao pin 2 cua Arduino
 const int denledDo1 = 2;  // đèn LED điều khiển bởi nút bấm
 const int denledXanhLaCay1 = 1;
+
 const int quangTro = A5;  // Quang trở cảm biến ánh sáng
-const int cambienNhietDo = 7;  // Cảm biến nhiệt độ và độ ẩm DHT11
-const int cambienChuyenDong = 8;  // Cảm biến chuyển động PIR
+const int giatringuongQuangTro = 600; // gia tri nguong tu 0 ~ 1024
+
+const int cambienDHT11 = 7;  // Cảm biến nhiệt độ và độ ẩm DHT11
+const int cambienPIR= 8;  // Cảm biến chuyển động PIR
 
 // Các thiết bị đầu ra
 const int coi = 3;
 const int denledDo2 = 11;
-const int denXanhLaCay2 = 10;
-const int denXanhNuocBien2 = 9;
+const int denledXanhLaCay2 = 10;
+const int denledXanhNuocBien2 = 9;
 
-int trangthaidenLED = LOW;  // trang thai den LED hien tai
+// khai báo các giá trị ngưỡng
+int nguongXanh = 28;
+int nguongVang = 30;
+
+int chedodenLED = 0;  // tùy chế độ mà hiển thị màu đèn LED tương ứng
 int trangthaiNutBam;    // trang thai nut bam hien tai
 int trangthainutbamTruoc = LOW;   // trang thai nut bam truoc do
 
@@ -51,12 +64,19 @@ long thoidiemDebounceTruoc = 0;  // thoi diem nut bam chuyen doi trang thai
 long dotreDebounce = 50;   // do tre cua moi lan debounce
 
 void setup() {
-  // Khai báo các cổng trên board Arduino
-  pinMode(denLED, OUTPUT);  // Đèn LED là thiết bị đầu ra (output)
-  pinMode(nutBam, INPUT);   // Nút bấm là thiết bị đầu vào (input)
+  // khai báo các cổng vào & ra trên board Arduino
+  // cổng vào
+  pinMode(nutBam, INPUT);  // nút bấm
+  pinMode(cambienDHT11, INPUT); // cảm biến nhiệt độ DHT11
+  pinMode(cambienPIR, INPUT); // cảm biến chuyển động PIR
   
-  // Thiet lap trang thai ban dau led va nut bam
-  digitalWrite(denLED, trangthaidenLED);
+  // cổng ra
+  pinMode(denledDo1, OUTPUT);   // đèn led đỏ 1
+  pinMode(denledXanhLaCay1, OUTPUT);   // đèn led xanh lá cây 1
+  pinMode(coi, OUTPUT);  // còi
+  pinMode(denledDo2, OUTPUT);  // đèn led đỏ 2
+  pinMode(denledXanhLaCay2, OUTPUT);  // đèn led xanh lá cây 2
+  pinMode(denledXanhNuocBien2, OUTPUT);  // đèn led nước biển 2
 }
 
 void loop() {
@@ -78,14 +98,108 @@ void loop() {
       // nut bam da duoc nhan
       if (trangthaiNutBam == HIGH) {
         // thay doi trang thai den LED
-        trangthaidenLED = !trangthaidenLED;  
+        chedodenLED += 1;
       }
     }
   }
   
-  // xuat gia trang thai den LED
-  digitalWrite(denLED, trangthaidenLED);
+  switch(chedodenLED) {
+    case 1:
+      chedoNhaThongMinh();
+      break;
+    case 2:
+      chedoBaoDong();
+      break;
+    case 3:
+      chedocambienNhietDo();
+      break;
+    default:
+      chedodenLED = 0;
+      break;
+  }
   
   // ghi lai gia tri nut bam
   trangthainutbamTruoc = giatriNutBam;
+}
+
+void chedoNhaThongMinh() {
+  // đèn LED 1 hiển thị màu xanh lá cây
+  digitalWrite(denledDo1, LOW);
+  digitalWrite(denledXanhLaCay1, HIGH);
+  
+  int trangthaiPIR = LOW;
+  int giatriQuangTro = analogRead(quangTro);
+  // giá trị quang trở nhỏ hơn giá trị ngưỡng => trời tối
+  if (giatriQuangTro < giatringuongQuangTro) {
+    // đọc trang thái cảm biến PIR
+    if (digitalRead(cambienPIR) == HIGH) {
+      trangthaiPIR != trangthaiPIR; 
+    }
+    if (trangthaiPIR == HIGH) {
+      // cảm biến chuyển động được kích hoạt => bật sáng đèn
+      analogWrite(denledDo2, 0);
+      analogWrite(denledXanhLaCay2, 0);
+      analogWrite(denledXanhNuocBien2, 0);
+    } else {
+      // cảm biến chuyển động được kích hoạt => bật sáng đèn
+      analogWrite(denledDo2, 255);
+      analogWrite(denledXanhLaCay2, 255);
+      analogWrite(denledXanhNuocBien2, 255);
+    }
+  } else {
+    // giá trị quang trở lớn hơn ngưỡng => trời sáng, luôn tắt đèn
+      analogWrite(denledDo2, 255);
+      analogWrite(denledXanhLaCay2, 255);
+      analogWrite(denledXanhNuocBien2, 255);
+  }
+}
+
+void chedoBaoDong() {
+  // đèn LED 1 hiển thị màu đỏ
+  digitalWrite(denledDo1, HIGH);
+  digitalWrite(denledXanhLaCay1, LOW);
+  
+  //
+  if (digitalRead(cambienPIR) == HIGH) {
+    analogWrite(denledDo2, 0);
+    delay(100);
+    analogWrite(denledDo2, 255);
+    delay(100);
+    analogWrite(coi, 200);
+    delay(100);
+    analogWrite(coi, 0);
+    delay(100);
+  }
+}
+
+void chedocambienNhietDo() {
+  // đèn LED 1 hiển thị màu vàng
+  digitalWrite(denledDo1, HIGH);
+  digitalWrite(denledXanhLaCay1, HIGH);
+  
+  // thiết lập cảm biến DHT11
+  DHT.read11(cambienDHT11);
+  
+  // đọc nhiệt độ từ cảm biến
+  int nhietdo = (int)DHT.temperature;
+  
+  if (nhietdo <= nguongXanh) {
+    // nếu nhiệt độ nhỏ hoặc bằng nguongXanh thì bật đèn xanh
+    analogWrite(denledXanhLaCay2, 0);
+    analogWrite(denledXanhNuocBien2, 255);
+    analogWrite(denledDo2, 255);
+  } else if (nhietdo > nguongXanh && nhietdo <= nguongVang) {
+     // nếu nhiệt độ lớn hơn nguongXanh và nhỏ hơn hoặc bằng nguongVang thì bật đèn vàng
+    analogWrite(denledXanhLaCay2, 0);
+    analogWrite(denledXanhNuocBien2, 255);
+    analogWrite(denledDo2, 0);
+  } else {
+    // nếu nhiệt độ lớn hơn nguongVang thì bật đèn đỏ
+    analogWrite(denledXanhLaCay2, 255);
+    analogWrite(denledXanhNuocBien2, 255);
+    analogWrite(denledDo2, 0);
+  }
+  
+  // delay 2s
+  delay(2000);
 }
