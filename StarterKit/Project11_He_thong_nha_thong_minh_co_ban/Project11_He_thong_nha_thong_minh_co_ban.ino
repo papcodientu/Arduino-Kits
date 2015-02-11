@@ -59,7 +59,7 @@ int nguongVang = 28;
 
 int chedodenLED = 0;  // tùy chế độ mà hiển thị màu đèn LED tương ứng
 int trangthaiNutBam;    // trang thai nut bam hien tai
-int trangthainutbamTruoc = LOW;   // trang thai nut bam truoc do
+int trangthainutbamTruoc = HIGH;   // trang thai nut bam truoc do
 
 long thoidiemDebounceTruoc = 0;  // thoi diem nut bam chuyen doi trang thai
 long dotreDebounce = 50;   // do tre cua moi lan debounce
@@ -104,7 +104,7 @@ void loop() {
       trangthaiNutBam = giatriNutBam;
      
       // nut bam da duoc nhan
-      if (trangthaiNutBam == HIGH) {
+      if (trangthaiNutBam == LOW) {
         // thay doi trang thai den LED
         chedodenLED += 1;
       }

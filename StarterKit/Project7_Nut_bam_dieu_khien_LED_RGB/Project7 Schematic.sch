@@ -1319,8 +1319,8 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <instance part="R1" gate="G$1" x="99.06" y="119.38"/>
 <instance part="R2" gate="G$1" x="27.94" y="119.38"/>
 <instance part="S1" gate="1" x="114.3" y="121.92" rot="MR270"/>
-<instance part="GND3" gate="1" x="88.9" y="114.3"/>
-<instance part="SUPPLY2" gate="G$1" x="124.46" y="124.46"/>
+<instance part="GND3" gate="1" x="124.46" y="114.3"/>
+<instance part="SUPPLY2" gate="G$1" x="88.9" y="124.46"/>
 <instance part="FRAME1" gate="G$1" x="-33.02" y="-15.24"/>
 <instance part="FRAME1" gate="V" x="114.3" y="-15.24"/>
 <instance part="LED1" gate="G$1" x="48.26" y="119.38"/>
@@ -1336,16 +1336,16 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <wire x1="76.2" y1="48.26" x2="76.2" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="S1" gate="1" pin="P1"/>
-<pinref part="SUPPLY2" gate="G$1" pin="VCC"/>
-<wire x1="119.38" y1="119.38" x2="124.46" y2="119.38" width="0.1524" layer="91"/>
-<wire x1="124.46" y1="119.38" x2="124.46" y2="124.46" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="SUPPLY3" gate="G$1" pin="VCC"/>
 <wire x1="20.32" y1="127" x2="20.32" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="R2" gate="G$1" pin="1"/>
 <wire x1="20.32" y1="119.38" x2="22.86" y2="119.38" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="SUPPLY2" gate="G$1" pin="VCC"/>
+<wire x1="88.9" y1="124.46" x2="88.9" y2="119.38" width="0.1524" layer="91"/>
+<pinref part="R1" gate="G$1" pin="1"/>
+<wire x1="88.9" y1="119.38" x2="93.98" y2="119.38" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -1355,10 +1355,10 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <wire x1="81.28" y1="48.26" x2="81.28" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 <segment>
+<pinref part="S1" gate="1" pin="P1"/>
 <pinref part="GND3" gate="1" pin="GND"/>
-<wire x1="88.9" y1="116.84" x2="88.9" y2="119.38" width="0.1524" layer="91"/>
-<pinref part="R1" gate="G$1" pin="1"/>
-<wire x1="88.9" y1="119.38" x2="93.98" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="119.38" x2="124.46" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="119.38" x2="124.46" y2="116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">

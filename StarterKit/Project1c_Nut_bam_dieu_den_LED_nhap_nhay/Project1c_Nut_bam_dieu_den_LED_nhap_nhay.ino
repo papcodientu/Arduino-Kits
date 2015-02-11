@@ -23,7 +23,7 @@ const int denLED = 13;  // den LED noi vao pin 13 cua Arduino
 
 int trangthaidenLED = LOW;  // trang thai den LED hien tai
 int trangthaiNutBam;    // trang thai nut bam hien tai
-int trangthainutbamTruoc = LOW;   // trang thai nut bam truoc do
+int trangthainutbamTruoc = HIGH;   // trang thai nut bam truoc do
 int tocdonhaydenLED = 1000;
 
 long thoidiemDebounceTruoc = 0;  // thoi diem nut bam chuyen doi trang thai
@@ -55,7 +55,7 @@ void loop() {
       trangthaiNutBam = giatriNutBam;
      
       // nut bam da duoc nhan
-      if (trangthaiNutBam == HIGH) {
+      if (trangthaiNutBam == LOW) {
         // thay doi trang thai den LED
         trangthaidenLED = !trangthaidenLED;  
       }
